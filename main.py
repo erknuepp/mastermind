@@ -2,10 +2,11 @@
 # Adapted by NutrinoLabs
 # Author edward.knueppel.jr@gmail.com
 # YMD Started: 2021-10-01
+# https://en.wikipedia.org/wiki/Mastermind_(board_game)
 
 legal_colors = ['R', 'G', 'B', 'Y', 'W', 'O', 'M', 'V']
-board_size = 4
-turn_size = 5
+board_size = 4 
+number_of_turns = 5
 
 def generate_color_sequence():
     import random
@@ -55,6 +56,8 @@ def get_peg_for_letter(solution_letter, solution_index, key):
     else:
         return "_"
 
+#Checks each position in the solution against the key and returns a combination of pegs
+#Return type str
 def get_pegs(solution, key):
     pegs = ""
     for i in range(len(solution)):
@@ -65,12 +68,13 @@ colors = generate_color_sequence()
 #colors = ['R', 'G', 'B', 'Y'] ### Uncomment to use Test Data ###
 #print(colors) ### Uncomment if debugging ###
 
-attempts = 0
-has_won = False
-while(not has_won and attempts < turn_size): #Game loop 5 chances to guess the correct colors and order
-    attempts += 1
-    flag = True
-    while(flag):
+attempts = 0 #The number of guesses
+has_won = False #The win state of the game
+
+while(not has_won and attempts < number_of_turns):
+    attempts += 1 #Increase the attempts by 1 at start of attempt
+    invalid = True #Start invalid and if you pass all validations switch to false
+    while(invalid):
         print("Options: 'R', 'G', 'B', 'Y', 'W', 'O', 'M', 'V'")
         guess = input("Enter your guess (4 letters):").upper()
         #Validate size of guess is 4 characters, each color in guess is valid and no colors in guess are repeating:
@@ -85,9 +89,9 @@ while(not has_won and attempts < turn_size): #Game loop 5 chances to guess the c
             print("Sorry that guess has repeats")
             continue
         else:
-            flag = False
+            invalid = False
         
-
+    #Calculate the results of this guess
     pegs = get_pegs(guess, colors)
 
     if pegs == "RRRR":
