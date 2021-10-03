@@ -4,30 +4,39 @@
 # YMD Started: 2021-10-01
 # https://en.wikipedia.org/wiki/Mastermind_(board_game)
 
-legal_colors = ['R', 'G', 'B', 'Y', 'W', 'O', 'M', 'V']
+# Future enhancements
+
+## Allow blanks
+allow_blanks = False
+
+## Allow repeats
+allow_repeats = False
+
+### BEGIN
+code_group = ['R', 'G', 'B', 'Y', 'W', 'O', 'M', 'V']
 board_size = 4 
 number_of_turns = 5
 
-def generate_color_sequence():
+def generate_code_sequence():
     import random
     random.seed()
 
-    sequence = random.sample(range(len(legal_colors)), board_size)
-    return [legal_colors[i] for i in sequence]
+    sequence = random.sample(range(len(code_group)), board_size)
+    return [code_group[i] for i in sequence]
 
 #If the color is vaild return true otherwise return false
 #Return type Boolean
-def legal_color(color):
-    if color in legal_colors:
+def is_legal_symbol(color):
+    if color in code_group:
         return True
     else: 
         return False
 
 #A loop to check that all colors are valid by calling legal_color() def
 #Return type Boolean
-def is_valid(guess):
+def is_valid_guess(guess):
     for i in range(len(guess)):
-        if legal_color(guess[i]): #This is accessing the ith index of guess. Strings are treated as arrays of characters in Python
+        if is_legal_symbol(guess[i]): #This is accessing the ith index of guess. Strings are treated as arrays of characters in Python
             continue #If it is valid, continue to check the next color
         else:
             return False #If a color is invalid return false
@@ -47,9 +56,9 @@ def has_repeats(guess):
 #Returns "W" for correct color and wrong position
 #Returns "_" for incorrect color
 #Return type str
-def get_peg_for_letter(solution_letter, solution_index, key):
-    if solution_letter in key:
-        if key.index(solution_letter) == solution_index:
+def get_peg_for_char(guess_char, guess_index, pattern):
+    if guess_char in pattern:
+        if pattern.index(guess_char) == guess_index:
             return "R"
         else:
             return "W"
@@ -58,32 +67,52 @@ def get_peg_for_letter(solution_letter, solution_index, key):
 
 #Checks each position in the solution against the key and returns a combination of pegs
 #Return type str
-def get_pegs(solution, key):
+def get_pegs(guess, pattern):
     pegs = ""
-    for i in range(len(solution)):
-        pegs += get_peg_for_letter(solution[i], i, key)
+    for i in range(len(guess)):
+        pegs += get_peg_for_char(guess[i], i, pattern)
     return pegs
 
-colors = generate_color_sequence()
+pattern = generate_code_sequence()
 #colors = ['R', 'G', 'B', 'Y'] ### Uncomment to use Test Data ###
 #print(colors) ### Uncomment if debugging ###
 
-attempts = 0 #The number of guesses
+turn = 0 #The number of guesses
 has_won = False #The win state of the game
 
-while(not has_won and attempts < number_of_turns):
-    attempts += 1 #Increase the attempts by 1 at start of attempt
+print("""
+                                                ,----,                                                                       
+          ____                                ,/   .`|                              ____                   ,--.              
+        ,'  , `.   ,---,       .--.--.      ,`   .'  :   ,---,.,-.----.           ,'  , `.   ,---,       ,--.'|    ,---,     
+     ,-+-,.' _ |  '  .' \     /  /    '.  ;    ;     / ,'  .' |\    /  \       ,-+-,.' _ |,`--.' |   ,--,:  : |  .'  .' `\   
+  ,-+-. ;   , || /  ;    '.  |  :  /`. /.'___,/    ,',---.'   |;   :    \   ,-+-. ;   , |||   :  :,`--.'`|  ' :,---.'     \  
+ ,--.'|'   |  ;|:  :       \ ;  |  |--` |    :     | |   |   .'|   | .\ :  ,--.'|'   |  ;|:   |  '|   :  :  | ||   |  .`\  | 
+|   |  ,', |  '::  |   /\   \|  :  ;_   ;    |.';  ; :   :  |-,.   : |: | |   |  ,', |  ':|   :  |:   |   \ | ::   : |  '  | 
+|   | /  | |  |||  :  ' ;.   :\  \    `.`----'  |  | :   |  ;/||   |  \ : |   | /  | |  ||'   '  ;|   : '  '; ||   ' '  ;  : 
+'   | :  | :  |,|  |  ;/  \   \`----.   \   '   :  ; |   :   .'|   : .  / '   | :  | :  |,|   |  |'   ' ;.    ;'   | ;  .  | 
+;   . |  ; |--' '  :  | \  \ ,'__ \  \  |   |   |  ' |   |  |-,;   | |  \ ;   . |  ; |--' '   :  ;|   | | \   ||   | :  |  ' 
+|   : |  | ,    |  |  '  '--' /  /`--'  /   '   :  | '   :  ;/||   | ;\  \|   : |  | ,    |   |  ''   : |  ; .''   : | /  ;  
+|   : '  |/     |  :  :      '--'.     /    ;   |.'  |   |    \:   ' | \.'|   : '  |/     '   :  ||   | '`--'  |   | '` ,/   
+;   | |`-'      |  | ,'        `--'---'     '---'    |   :   .':   : :-'  ;   | |`-'      ;   |.' '   : |      ;   :  .'     
+|   ;/          `--''                                |   | ,'  |   |.'    |   ;/          '---'   ;   |.'      |   ,.'       
+'---'                                                `----'    `---'      '---'                   '---'        '---'         
+                                                                                                                             
+""")
+print("Welcome to Mastermind, Friendo. Good luck!")
+while(not has_won and turn < number_of_turns):
+    turn += 1 #Increase the attempts by 1 at start of attempt
     invalid = True #Start invalid and if you pass all validations switch to false
     while(invalid):
-        print("Options: 'R', 'G', 'B', 'Y', 'W', 'O', 'M', 'V'")
-        guess = input("Enter your guess (4 letters):").upper()
+        print("\nCode Group: ", end='')
+        [print(x + ", ", end='') for x in code_group]
+        guess = input("\nEnter your guess (4 valid symbols):").upper()
         #Validate size of guess is 4 characters, each color in guess is valid and no colors in guess are repeating:
-        if len(guess) != 4:
+        if len(guess) != board_size:
             print(len(guess))
-            print("Sorry that choice is not 4 characters!")
+            print("\nSorry that guess is not " + board_size + " characters!")
             continue
-        elif not is_valid(guess):
-            print("Sorry that choice has at least one invalid character!")
+        elif not is_valid_guess(guess):
+            print("Sorry that guess has at least one invalid character!")
             continue
         elif has_repeats(guess):
             print("Sorry that guess has repeats")
@@ -92,15 +121,15 @@ while(not has_won and attempts < number_of_turns):
             invalid = False
         
     #Calculate the results of this guess
-    pegs = get_pegs(guess, colors)
+    pegs = get_pegs(guess, pattern)
 
-    if pegs == "RRRR":
+    if pegs == "R" * board_size:
         has_won = True
-    else:
-        print("Keep trying! Your current solution results are " + pegs)
+    elif turn < number_of_turns:
+        print("\nKeep trying! Your hints are " + pegs)
     
 
 if(has_won):
-    print("Holy smokes you did it in " + str(attempts) + " attempts!")
+    print(("Holy smokes you did it in " + str(turn) + " turns!   ") * 1000000, end='') 
 else:
-    print("Hey, don't feel bad, friend; barely anyone can beat THE MASTERMIND!!!!!1111")
+    print("\nHey, don't feel bad, Friendo; barely anyone can beat THE MASTERMIND!!!!!1111")
