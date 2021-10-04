@@ -93,6 +93,10 @@ def display_logo():
                                                                                                                              
 """)
 
+def display_code_group(code_group):
+    print("\nCode Group: ", end='')
+    [print(x + ", ", end='') for x in code_group]
+
 pattern = generate_code_sequence()
 #colors = ['R', 'G', 'B', 'Y'] ### Uncomment to use Test Data ###
 #print(colors) ### Uncomment if debugging ###
@@ -102,12 +106,14 @@ has_won = False #The win state of the game
 
 display_logo()
 print("Welcome to Mastermind, Friendo. Good luck!")
+
+
 while(not has_won and turn < number_of_turns):
     turn += 1 #Increase the attempts by 1 at start of attempt
     invalid = True #Start invalid and if you pass all validations switch to false
     while(invalid):
-        print("\nCode Group: ", end='')
-        [print(x + ", ", end='') for x in code_group]
+        display_code_group(code_group)
+        print("Turn #" + str(turn))
         guess = input("\nEnter your guess (4 valid symbols):").upper()
         #Validate size of guess is 4 characters, each color in guess is valid and no colors in guess are repeating:
         if len(guess) != board_size:
@@ -115,10 +121,10 @@ while(not has_won and turn < number_of_turns):
             print("\nSorry that guess is not " + board_size + " characters!")
             continue
         elif not is_valid_guess(guess):
-            print("Sorry that guess has at least one invalid character!")
+            print("\nSorry that guess has at least one invalid character!")
             continue
         elif has_repeats(guess):
-            print("Sorry that guess has repeats")
+            print("\nSorry that guess has repeats")
             continue
         else:
             invalid = False
