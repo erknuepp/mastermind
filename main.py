@@ -130,6 +130,7 @@ while(not has_won and turn < number_of_turns):
     
 
 if(has_won):
-    print(("Holy smokes you did it in " + str(turn) + " turns!   ") * 1000000, end='') 
+    for i in range(100000):
+        print(("Holy smokes you did it in " + str(turn) + " turns!") * 10000, end='') 
 else:
     print("\nHey, don't feel bad, Friendo; barely anyone can beat THE MASTERMIND!!!!!1111")
