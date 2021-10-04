@@ -73,14 +73,8 @@ def get_pegs(guess, pattern):
         pegs += get_peg_for_char(guess[i], i, pattern)
     return pegs
 
-pattern = generate_code_sequence()
-#colors = ['R', 'G', 'B', 'Y'] ### Uncomment to use Test Data ###
-#print(colors) ### Uncomment if debugging ###
-
-turn = 0 #The number of guesses
-has_won = False #The win state of the game
-
-print("""
+def display_logo():
+    print("""
                                                 ,----,                                                                       
           ____                                ,/   .`|                              ____                   ,--.              
         ,'  , `.   ,---,       .--.--.      ,`   .'  :   ,---,.,-.----.           ,'  , `.   ,---,       ,--.'|    ,---,     
@@ -98,6 +92,15 @@ print("""
 '---'                                                `----'    `---'      '---'                   '---'        '---'         
                                                                                                                              
 """)
+
+pattern = generate_code_sequence()
+#colors = ['R', 'G', 'B', 'Y'] ### Uncomment to use Test Data ###
+#print(colors) ### Uncomment if debugging ###
+
+turn = 0 #The number of guesses
+has_won = False #The win state of the game
+
+display_logo()
 print("Welcome to Mastermind, Friendo. Good luck!")
 while(not has_won and turn < number_of_turns):
     turn += 1 #Increase the attempts by 1 at start of attempt
@@ -130,7 +133,7 @@ while(not has_won and turn < number_of_turns):
     
 
 if(has_won):
-    for i in range(100000):
-        print(("Holy smokes you did it in " + str(turn) + " turns!") * 10000, end='') 
+    for i in range(1000):
+        print(("Holy smokes you did it in " + str(turn) + " turns!               ") * 3) 
 else:
     print("\nHey, don't feel bad, Friendo; barely anyone can beat THE MASTERMIND!!!!!1111")
