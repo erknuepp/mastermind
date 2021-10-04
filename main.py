@@ -117,7 +117,6 @@ while(not has_won and turn < number_of_turns):
         guess = input("\nEnter your guess (4 valid symbols):").upper()
         #Validate size of guess is 4 characters, each color in guess is valid and no colors in guess are repeating:
         if len(guess) != board_size:
-            print(len(guess))
             print("\nSorry that guess is not " + board_size + " characters!")
             continue
         elif not is_valid_guess(guess):
