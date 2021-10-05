@@ -17,13 +17,6 @@ code_group = ['R', 'G', 'B', 'Y', 'W', 'O', 'M', 'V']
 board_size = 4 
 number_of_turns = 5
 
-def generate_code_sequence():
-    import random
-    random.seed()
-
-    sequence = random.sample(range(len(code_group)), board_size)
-    return [code_group[i] for i in sequence]
-
 #If the color is vaild return true otherwise return false
 #Return type Boolean
 def is_legal_symbol(color):
@@ -51,28 +44,6 @@ def has_repeats(guess):
         else:
             return False #else return false
 
-#Takes in the letter and index to compare it to the key
-#Returns "R" for correct color and position
-#Returns "W" for correct color and wrong position
-#Returns "_" for incorrect color
-#Return type str
-def get_peg_for_char(guess_char, guess_index, pattern):
-    if guess_char in pattern:
-        if pattern.index(guess_char) == guess_index:
-            return "R"
-        else:
-            return "W"
-    else:
-        return "_"
-
-#Checks each position in the solution against the key and returns a combination of pegs
-#Return type str
-def get_pegs(guess, pattern):
-    pegs = ""
-    for i in range(len(guess)):
-        pegs += get_peg_for_char(guess[i], i, pattern)
-    return pegs
-
 def display_logo():
     print("""
                                                 ,----,                                                                       
@@ -96,8 +67,8 @@ def display_logo():
 def display_code_group(code_group):
     print("\nCode Group: ", end='')
     [print(x + ", ", end='') for x in code_group]
-
-pattern = generate_code_sequence()
+import game
+pattern = game.generate_code_sequence(code_group, board_size)
 #colors = ['R', 'G', 'B', 'Y'] ### Uncomment to use Test Data ###
 #print(colors) ### Uncomment if debugging ###
 
@@ -129,7 +100,7 @@ while(not has_won and turn < number_of_turns):
             invalid = False
         
     #Calculate the results of this guess
-    pegs = get_pegs(guess, pattern)
+    pegs = game.get_pegs(guess, pattern)
 
     if pegs == "R" * board_size:
         has_won = True
